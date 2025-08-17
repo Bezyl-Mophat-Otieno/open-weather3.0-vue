@@ -27,7 +27,6 @@ const selectSuggestion = (suggestion: Location) => {
   <div class="space-y-6 w-full">
     <!-- Search Form -->
     <form @submit.prevent="emit('getWeatherInformation')" class="space-y-4 w-full max-w-lg mx-auto">
-      <!-- Input with Icon -->
       <div class="relative">
         <input
           type="text"
@@ -64,10 +63,10 @@ const selectSuggestion = (suggestion: Location) => {
 
           <div>
             <div class="font-medium text-gray-900">
-              {{ getLocationName(suggestion) }}
+              {{ suggestion.name }}
             </div>
             <div class="text-sm text-gray-500">
-              {{ suggestion.state ? `${suggestion.state}, ` : '' }}{{ suggestion.country }}
+              {{ getLocationName(suggestion) }}
             </div>
           </div>
         </button>

@@ -48,10 +48,11 @@ watchDebounced(
       </div>
     </header>
 
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-4 xl:col-span-3">
+    <main class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <div class="w-full lg:w-1/3 xl:w-1/4">
           <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
+            <!-- WeatherSearch -->
             <WeatherSearch
               :suggestedLocations="suggestedLocations"
               :locationsSearchHistory="locationsSearchHistory"
@@ -63,19 +64,24 @@ watchDebounced(
           </div>
         </div>
 
-        <div className="lg:col-span-8 xl:col-span-9">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-            <AlertMessage
-              v-if="alertMessage"
-              :message="alertMessage"
-              :type="alertType"
-              @close="clearAlert"
-            />
-          </div>
+        <!-- Divider -->
+        <div class="hidden lg:block w-[2px] bg-gray-200"></div>
+
+        <!-- Right column -->
+        <div class="flex-1">
+          <AlertMessage
+            v-if="alertMessage"
+            :message="alertMessage"
+            :type="alertType"
+            @close="clearAlert"
+            class="mb-4"
+          />
+
           <LoadingSpinner v-if="isLoading" />
+
           <div
-            className="flex flex-col items-center justify-center py-16 text-center"
             v-if="!isLoading && !Object.values(currentWeatherForecast).every(Boolean)"
+            class="flex flex-col items-center justify-center py-16 text-center"
           >
             <div class="p-4 bg-gray-100 rounded-full mb-4">
               <Cloud class="h-12 w-12 text-gray-400" />
@@ -86,14 +92,13 @@ watchDebounced(
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div class="space-y-8" v-if="hasForecast">
             <CurrentForecast
-              v-if="hasForecast"
               :cityName="getLocationName(selectedLocation)"
               :currentWeather="currentWeatherForecast"
             />
 
-            <div v-if="hasForecast" bg-white border border-gray-200 rounded-lg p-6 shadow-sm>
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
               <DailyForecast :dailyWeather="dailyWeatherForecast.slice(0, 5)" />
             </div>
           </div>
