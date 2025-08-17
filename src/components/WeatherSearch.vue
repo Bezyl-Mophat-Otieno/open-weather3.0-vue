@@ -1,0 +1,54 @@
+<script lang="ts" setup>
+import { MapPin } from 'lucide-vue-next'
+</script>
+
+<template>
+  <div class="space-y-6 w-full">
+    <!-- Search Form -->
+    <form class="space-y-4 w-full max-w-lg mx-auto">
+      <!-- Input with Icon -->
+      <div class="relative">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search for a city..."
+          class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition"
+        />
+        <MapPin class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      </div>
+
+      <!-- Search Button -->
+      <button
+        type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      >
+        Get Weather
+      </button>
+    </form>
+
+    <!-- Search History -->
+    <SearchHistory class="w-full max-w-lg mx-auto" />
+
+    <!-- Suggestions -->
+    <div
+      class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden w-full max-w-lg mx-auto"
+    >
+      <div class="p-3 border-b border-gray-200 bg-gray-50">
+        <h3 class="text-sm font-medium text-gray-900">Search Results</h3>
+      </div>
+
+      <div class="max-h-48 overflow-y-auto">
+        <button
+          class="w-full text-left px-4 py-3 border-b border-gray-200 flex items-center space-x-2 hover:bg-gray-100 transition last:border-b-0 cursor-pointer"
+        >
+          <MapPin class="h-4 w-4 text-gray-400 flex-shrink-0" />
+
+          <div>
+            <div class="font-medium text-gray-900"></div>
+            <div class="text-sm text-gray-500"></div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
