@@ -7,16 +7,17 @@ import { useWeatherForecast } from './composibles/useWeatherForecast'
 import { watchDebounced } from '@vueuse/core'
 import { getLocationName } from '@/utils/getLocationName'
 import { Cloud } from 'lucide-vue-next'
+import LoadingSpinner from './components/LoadingSpinner.vue'
 
 const {
   searchInput,
   alertMessage,
   isLoading,
-  locationSuggestions,
+  suggestedLocations,
   hasForecast,
   dailyWeatherForecast,
   currentWeatherForecast,
-  cachedLocations,
+  locationsSearchHistory,
   isLocationSelected,
   alertType,
   selectedLocation,
@@ -62,8 +63,8 @@ watchDebounced(
         <div className="lg:col-span-4 xl:col-span-3">
           <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
             <WeatherSearch
-              :locationSuggestions="locationSuggestions"
-              :cachedLocations="cachedLocations"
+              :suggestedLocations="suggestedLocations"
+              :locationsSearchHistory="locationsSearchHistory"
               v-model:searchInput="searchInput"
               @setSelectedSuggestion="setSelectedLocation"
               @getWeatherInformation="getWeatherInformation"
@@ -73,13 +74,10 @@ watchDebounced(
         </div>
 
         <div className="lg:col-span-8 xl:col-span-9">
-          <div className="flex items-center justify-center py-12" v-if="isLoading">
-            <div class="h-8 w-8 border-b-2 border-blue-600 rounded-full animate-spin"></div>
-            <span class="ml-3 text-gray-500">Loading weather data...</span>
-          </div>
+          <LoadingSpinner v-if="isLoading" />
           <div
             className="flex flex-col items-center justify-center py-16 text-center"
-            v-if="!isLoading && !currentWeatherForecast"
+            v-if="!isLoading"
           >
             <div class="p-4 bg-gray-100 rounded-full mb-4">
               <Cloud class="h-12 w-12 text-gray-400" />

@@ -53,10 +53,10 @@ export const useWeatherForecast = () => {
   const alertType = ref<AlertType>()
   const weatherForecast = reactive<WeatherForecast>(defaultWeatherFocust)
   const { current: currentWeatherForecast, daily: dailyWeatherForecast } = toRefs(weatherForecast)
-  const locationSuggestions = reactive<LocationList>([])
+  const suggestedLocations = reactive<LocationList>([])
   const selectedLocation = reactive<Location>(defaultLocation)
 
-  const cachedLocations = reactive(Object.entries(defaultSearchHistory).slice(0, 5))
+  const locationsSearchHistory = reactive(Object.entries(defaultSearchHistory).slice(0, 5))
   const isLocationSelected = computed(() => Boolean(selectedLocation.name))
 
   const showAlert = (msg: string, type: AlertType = 'info') => {
@@ -81,12 +81,12 @@ export const useWeatherForecast = () => {
     if (!response || response.data.length === 0) {
       return
     }
-    const { data: newLocationSuggestions } = response
-    locationSuggestions.length = 0
-    locationSuggestions.push(...newLocationSuggestions)
+    const { data: newSuggestedLocations } = response
+    suggestedLocations.length = 0
+    suggestedLocations.push(...newSuggestedLocations)
   }
   const getWeatherInformation = async () => {
-    locationSuggestions.length = 0
+    suggestedLocations.length = 0
     isLoading.value = true
     if (!selectedLocation.name || !selectedLocation.country || !selectedLocation.state) {
       showAlert(
@@ -115,8 +115,8 @@ export const useWeatherForecast = () => {
     hasForecast,
     isLoading,
     alertMessage,
-    cachedLocations,
-    locationSuggestions,
+    locationsSearchHistory,
+    suggestedLocations,
     currentWeatherForecast,
     dailyWeatherForecast,
     isLocationSelected,

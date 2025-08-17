@@ -3,17 +3,18 @@ import { defineEmits, defineProps, computed } from 'vue'
 import { getLocationName } from '@/utils/getLocationName'
 import type { Location, LocationList, CacheEntry } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'
+import LocationSearchHistory from './LocationSearchHistory.vue';
 
 const props = defineProps<{
-  cachedLocations: Array<[string, CacheEntry]>
+  locationsSearchHistory: Array<[string, CacheEntry]>
   searchInput: string
-  locationSuggestions: LocationList
+  suggestedLocations: LocationList
   isLocationSelected: boolean
 }>()
 
 const emit = defineEmits(['update:searchInput', 'getWeatherInformation', 'setSelectedSuggestion'])
 
-const showSuggestions = computed(() => Boolean(props.locationSuggestions.length))
+const showSuggestions = computed(() => Boolean(props.suggestedLocations.length))
 const updateSearchInput = (value: string) => emit('update:searchInput', value)
 const selectSuggestion = (suggestion: Location) => {
   emit('setSelectedSuggestion', suggestion)
@@ -49,8 +50,8 @@ const selectSuggestion = (suggestion: Location) => {
     </form>
 
     <!-- Search History -->
-    <SearchHistory
-      :cachedLocations="props.cachedLocations"
+    <LocationSearchHistory
+      :locationsSearchHistory="props.locationsSearchHistory"
       @updateSearchInput="updateSearchInput"
       class="w-full max-w-lg mx-auto"
     />
@@ -66,7 +67,7 @@ const selectSuggestion = (suggestion: Location) => {
 
       <div class="max-h-48 overflow-y-auto">
         <button
-          v-for="(suggestion, index) in locationSuggestions"
+          v-for="(suggestion, index) in suggestedLocations"
           :key="index"
           @click="selectSuggestion(suggestion)"
           class="w-full text-left px-4 py-3 border-b border-gray-200 flex items-center space-x-2 hover:bg-gray-100 transition last:border-b-0 cursor-pointer"
