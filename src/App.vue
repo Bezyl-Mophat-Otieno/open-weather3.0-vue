@@ -1,8 +1,39 @@
 <script lang="ts" setup>
-import { Cloud } from 'lucide-vue-next'
-import ForecastCard from '@/components/ForecastCard.vue'
 import WeatherSearch from '@/components/WeatherSearch.vue'
-import Alert from '@/components/Alert.vue'
+import ForecastCard from '@/components/ForecastCard.vue'
+import WeatherCard from '@/components/WeatherCard.vue'
+import AlertMessage from './components/AlertMessage.vue'
+import { useWeatherForecast } from './composibles/useWeatherForecast'
+import { watchDebounced } from '@vueuse/core'
+import { getLocationName } from '@/utils/getLocationName'
+import { Cloud } from 'lucide-vue-next'
+
+const {
+  searchInput,
+  alertMessage,
+  isLoading,
+  locationSuggestions,
+  hasForecast,
+  dailyWeatherForecast,
+  currentWeatherForecast,
+  cachedLocations,
+  isLocationSelected,
+  alertType,
+  selectedLocation,
+  setSelectedLocation,
+  getWeatherInformation,
+  clearAlert,
+  getLocationInformation,
+} = useWeatherForecast()
+
+watchDebounced(
+  searchInput,
+  async (newValue) => {
+    if (!newValue) return
+    await getLocationInformation()
+  },
+  { debounce: 800 },
+)
 </script>
 
 <template>
@@ -18,20 +49,38 @@ import Alert from '@/components/Alert.vue'
       </div>
     </header>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-      <Alert />
+      <AlertMessage
+        v-if="alertMessage"
+        :message="alertMessage"
+        :type="alertType"
+        @close="clearAlert"
+      />
     </div>
 
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-4 xl:col-span-3">
           <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
-            <WeatherSearch />
+            <WeatherSearch
+              :locationSuggestions="locationSuggestions"
+              :cachedLocations="cachedLocations"
+              v-model:searchInput="searchInput"
+              @setSelectedSuggestion="setSelectedLocation"
+              @getWeatherInformation="getWeatherInformation"
+              :isLocationSelected="isLocationSelected"
+            />
           </div>
         </div>
 
         <div className="lg:col-span-8 xl:col-span-9">
-          <Loading />
-          <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="flex items-center justify-center py-12" v-if="isLoading">
+            <div class="h-8 w-8 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+            <span class="ml-3 text-gray-500">Loading weather data...</span>
+          </div>
+          <div
+            className="flex flex-col items-center justify-center py-16 text-center"
+            v-if="!isLoading && !currentWeatherForecast"
+          >
             <div class="p-4 bg-gray-100 rounded-full mb-4">
               <Cloud class="h-12 w-12 text-gray-400" />
             </div>
@@ -42,10 +91,15 @@ import Alert from '@/components/Alert.vue'
           </div>
 
           <div className="space-y-8">
-            <WeatherCard />
+            <WeatherCard
+              v-if="hasForecast"
+              :locationName="getLocationName(selectedLocation)"
+              :currentWeather="currentWeatherForecast"
+              :cityName="searchInput"
+            />
 
-            <div bg-white border border-gray-200 rounded-lg p-6 shadow-sm>
-              <ForecastCard />
+            <div v-if="hasForecast" bg-white border border-gray-200 rounded-lg p-6 shadow-sm>
+              <ForecastCard :dailyWeather="dailyWeatherForecast" />
             </div>
           </div>
         </div>

@@ -12,3 +12,4 @@ export const GeocodeListSchema = z.array(GeocodeSchema)
 
 export type Location = z.infer<typeof GeocodeSchema>
 export type LocationList = z.infer<typeof GeocodeListSchema>
+export type CacheEntry = { data: LocationList; expiresAt: number }

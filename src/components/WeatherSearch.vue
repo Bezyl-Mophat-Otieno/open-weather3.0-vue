@@ -1,16 +1,37 @@
 <script lang="ts" setup>
+import { defineEmits, defineProps, computed } from 'vue'
+import { getLocationName } from '@/utils/getLocationName'
+import type { Location, LocationList, CacheEntry } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'
+
+const props = defineProps<{
+  cachedLocations: Array<[string, CacheEntry]>
+  searchInput: string
+  locationSuggestions: LocationList
+  isLocationSelected: boolean
+}>()
+
+const emit = defineEmits(['update:searchInput', 'getWeatherInformation', 'setSelectedSuggestion'])
+
+const showSuggestions = computed(() => Boolean(props.locationSuggestions.length))
+const updateSearchInput = (value: string) => emit('update:searchInput', value)
+const selectSuggestion = (suggestion: Location) => {
+  emit('setSelectedSuggestion', suggestion)
+  updateSearchInput(getLocationName(suggestion))
+}
 </script>
 
 <template>
   <div class="space-y-6 w-full">
     <!-- Search Form -->
-    <form class="space-y-4 w-full max-w-lg mx-auto">
+    <form @submit.prevent="emit('getWeatherInformation')" class="space-y-4 w-full max-w-lg mx-auto">
       <!-- Input with Icon -->
       <div class="relative">
         <input
           type="text"
           name="search"
+          :value="props.searchInput"
+          @input="updateSearchInput(($event.target as HTMLInputElement).value)"
           placeholder="Search for a city..."
           class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition"
         />
@@ -20,6 +41,7 @@ import { MapPin } from 'lucide-vue-next'
       <!-- Search Button -->
       <button
         type="submit"
+        :disabled="!props.isLocationSelected || !showSuggestions"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         Get Weather
@@ -27,10 +49,15 @@ import { MapPin } from 'lucide-vue-next'
     </form>
 
     <!-- Search History -->
-    <SearchHistory class="w-full max-w-lg mx-auto" />
+    <SearchHistory
+      :cachedLocations="props.cachedLocations"
+      @updateSearchInput="updateSearchInput"
+      class="w-full max-w-lg mx-auto"
+    />
 
     <!-- Suggestions -->
     <div
+      v-if="showSuggestions"
       class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden w-full max-w-lg mx-auto"
     >
       <div class="p-3 border-b border-gray-200 bg-gray-50">
@@ -39,13 +66,20 @@ import { MapPin } from 'lucide-vue-next'
 
       <div class="max-h-48 overflow-y-auto">
         <button
+          v-for="(suggestion, index) in locationSuggestions"
+          :key="index"
+          @click="selectSuggestion(suggestion)"
           class="w-full text-left px-4 py-3 border-b border-gray-200 flex items-center space-x-2 hover:bg-gray-100 transition last:border-b-0 cursor-pointer"
         >
           <MapPin class="h-4 w-4 text-gray-400 flex-shrink-0" />
 
           <div>
-            <div class="font-medium text-gray-900"></div>
-            <div class="text-sm text-gray-500"></div>
+            <div class="font-medium text-gray-900">
+              {{ getLocationName(suggestion) }}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ suggestion.state ? `${suggestion.state}, ` : '' }}{{ suggestion.country }}
+            </div>
           </div>
         </button>
       </div>
