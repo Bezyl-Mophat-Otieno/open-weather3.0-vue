@@ -44,7 +44,6 @@ watchDebounced(
           <div class="p-2 bg-blue-100 rounded-lg">
             <Cloud className="h-6 w-6 text-blue-600" />
           </div>
-          <h1 className="text-2xl font-bold text-blue-400 underline">Weather App</h1>
         </div>
       </div>
     </header>
@@ -90,9 +89,8 @@ watchDebounced(
           <div className="space-y-8">
             <WeatherCard
               v-if="hasForecast"
-              :locationName="getLocationName(selectedLocation)"
+              :cityName="getLocationName(selectedLocation)"
               :currentWeather="currentWeatherForecast"
-              :cityName="searchInput"
             />
 
             <div v-if="hasForecast" bg-white border border-gray-200 rounded-lg p-6 shadow-sm>

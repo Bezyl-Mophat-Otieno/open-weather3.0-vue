@@ -1,4 +1,4 @@
-import { weatherForecastCache } from '@/sevices/caching'
+import { useWeatherForecastStore } from '@/stores/weather-forecast-store'
 import { type WeatherForecast, weatherForecastSchema } from '@/types/weather-forecast'
 import { defaultWeatherForecast } from '@/utils/constants'
 import { normalizeInput } from '@/utils/normalizeInput'
@@ -15,8 +15,10 @@ class WeatherForecastApi {
     const searchParam = `${lat}-${lon}`
     const normalizedInputQuery = normalizeInput(searchParam)
 
+    const weatherForecastStore = useWeatherForecastStore()
+
     try {
-      const cached = weatherForecastCache.getCachedData(normalizedInputQuery)
+      const cached = weatherForecastStore.getCachedForecast(normalizedInputQuery)
       if (cached) {
         return {
           success: true,
@@ -37,7 +39,7 @@ class WeatherForecastApi {
 
       const parsed = weatherForecastSchema.parse(subset)
 
-      weatherForecastCache.cacheData(normalizedInputQuery, parsed)
+      weatherForecastStore.cacheForecast(normalizedInputQuery, parsed)
 
       return {
         success: true,

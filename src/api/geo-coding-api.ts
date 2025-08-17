@@ -1,4 +1,4 @@
-import { geoCodeCache } from '@/sevices/caching'
+import { useGeocodeStore } from '@/stores/geocode-store'
 import { GeocodeListSchema, type LocationList } from '@/types/geo-coding'
 import { normalizeInput } from '@/utils/normalizeInput'
 import axios from 'axios'
@@ -10,7 +10,9 @@ class GeocodingApi {
     try {
       const normalizedInput = normalizeInput(searchParam)
 
-      const cached = geoCodeCache.getCachedData(normalizedInput)
+      const geocodeStore = useGeocodeStore()
+
+      const cached = geocodeStore.getCachedData(normalizedInput)
       if (cached) {
         return {
           success: true,
@@ -33,7 +35,9 @@ class GeocodingApi {
 
       const parsed = GeocodeListSchema.parse(subset)
 
-      geoCodeCache.cacheData(normalizedInput, parsed)
+      geocodeStore.cacheData(normalizedInput, parsed)
+
+      console.log(geocodeStore.locationSearchHistory, 'Hello')
 
       return {
         success: true,

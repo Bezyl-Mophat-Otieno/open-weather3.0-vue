@@ -3,7 +3,7 @@ import { defineEmits, defineProps, computed } from 'vue'
 import { getLocationName } from '@/utils/getLocationName'
 import type { Location, LocationList, CacheEntry } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'
-import LocationSearchHistory from './LocationSearchHistory.vue';
+import LocationSearchHistory from './LocationSearchHistory.vue'
 
 const props = defineProps<{
   locationsSearchHistory: Array<[string, CacheEntry]>
@@ -49,13 +49,6 @@ const selectSuggestion = (suggestion: Location) => {
       </button>
     </form>
 
-    <!-- Search History -->
-    <LocationSearchHistory
-      :locationsSearchHistory="props.locationsSearchHistory"
-      @updateSearchInput="updateSearchInput"
-      class="w-full max-w-lg mx-auto"
-    />
-
     <!-- Suggestions -->
     <div
       v-if="showSuggestions"
@@ -85,5 +78,12 @@ const selectSuggestion = (suggestion: Location) => {
         </button>
       </div>
     </div>
+
+    <!-- Search History -->
+    <LocationSearchHistory
+      :locationsSearchHistory="props.locationsSearchHistory"
+      @updateSearchInput="updateSearchInput"
+      class="w-full max-w-lg mx-auto"
+    />
   </div>
 </template>
