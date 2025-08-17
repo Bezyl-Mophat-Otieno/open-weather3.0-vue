@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import WeatherSearch from '@/components/WeatherSearch.vue'
-import ForecastCard from '@/components/ForecastCard.vue'
-import WeatherCard from '@/components/WeatherCard.vue'
 import AlertMessage from './components/AlertMessage.vue'
 import { useWeatherForecast } from './composibles/useWeatherForecast'
 import { watchDebounced } from '@vueuse/core'
 import { getLocationName } from '@/utils/getLocationName'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 import { Cloud } from 'lucide-vue-next'
+import DailyForecast from '@/components/DailyForecast.vue'
+import CurrentForecast from '@/components/CurrentForecast.vue'
 
 const {
   searchInput,
@@ -47,14 +47,6 @@ watchDebounced(
         </div>
       </div>
     </header>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-      <AlertMessage
-        v-if="alertMessage"
-        :message="alertMessage"
-        :type="alertType"
-        @close="clearAlert"
-      />
-    </div>
 
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -72,6 +64,14 @@ watchDebounced(
         </div>
 
         <div className="lg:col-span-8 xl:col-span-9">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <AlertMessage
+              v-if="alertMessage"
+              :message="alertMessage"
+              :type="alertType"
+              @close="clearAlert"
+            />
+          </div>
           <LoadingSpinner v-if="isLoading" />
           <div
             className="flex flex-col items-center justify-center py-16 text-center"
@@ -87,14 +87,14 @@ watchDebounced(
           </div>
 
           <div className="space-y-8">
-            <WeatherCard
+            <CurrentForecast
               v-if="hasForecast"
               :cityName="getLocationName(selectedLocation)"
               :currentWeather="currentWeatherForecast"
             />
 
             <div v-if="hasForecast" bg-white border border-gray-200 rounded-lg p-6 shadow-sm>
-              <ForecastCard :dailyWeather="dailyWeatherForecast.slice(0, 5)" />
+              <DailyForecast :dailyWeather="dailyWeatherForecast.slice(0, 5)" />
             </div>
           </div>
         </div>

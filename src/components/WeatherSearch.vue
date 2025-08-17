@@ -4,6 +4,7 @@ import { getLocationName } from '@/utils/getLocationName'
 import type { Location, LocationList, CacheEntry } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'
 import LocationSearchHistory from './LocationSearchHistory.vue'
+import ActionButton from './ActionButton.vue'
 
 const props = defineProps<{
   locationsSearchHistory: Array<[string, CacheEntry]>
@@ -40,13 +41,7 @@ const selectSuggestion = (suggestion: Location) => {
       </div>
 
       <!-- Search Button -->
-      <button
-        type="submit"
-        :disabled="!props.isLocationSelected || !showSuggestions"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-      >
-        Get Weather
-      </button>
+      <ActionButton label="Get Weather" :disabled="!props.isLocationSelected || !showSuggestions" />
     </form>
 
     <!-- Suggestions -->

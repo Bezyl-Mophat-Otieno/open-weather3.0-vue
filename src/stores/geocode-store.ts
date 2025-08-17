@@ -3,10 +3,9 @@ import { ref, computed } from 'vue'
 import type { LocationList } from '@/types/geo-coding'
 
 export const useGeocodeStore = defineStore('geocode-store', () => {
-  const ttl = 24 * 60 * 60 * 1000 // 24 hours
+  const ttl = 24 * 60 * 60 * 1000 // 24 hours (ideally geocode takes a while before expiry)
   const locationsCache = ref<Record<string, { data: LocationList; expiresAt: number }>>({})
 
-  // Get cached data for a key
   const getCachedData = (key: string): LocationList | undefined => {
     const entry = locationsCache.value[key]
     if (!entry) return undefined
