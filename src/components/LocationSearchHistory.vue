@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { defineEmits } from 'vue'
 import { Clock, X } from 'lucide-vue-next'
-import { useGeocodeStore } from '@/stores/geocode-store';
+import { useGeocodeStore } from '@/stores/geocode-store'
 
-
- const store = useGeocodeStore()
+const store = useGeocodeStore()
 
 const emit = defineEmits<{
   (e: 'updateSearchInput', key: string): void
@@ -31,13 +30,14 @@ const emit = defineEmits<{
         <button
           @click="emit('updateSearchInput', location)"
           class="mr-2 hover:text-blue-600 transition-colors cursor-pointer"
+          data-testId="historicalLocationBtn"
         >
           {{ location }}
         </button>
 
         <!-- Remove Pill -->
         <button
-          @click="store.removeFromHistory( location)"
+          @click="store.removeFromHistory(location)"
           class="text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
           aria-label="Remove from recent searches"
         >

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps, computed } from 'vue'
 import { getLocationName } from '@/utils/getLocationName'
-import type { Location, LocationList, CacheEntry } from '@/types/geo-coding'
+import type { Location, LocationList } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'
 import LocationSearchHistory from './LocationSearchHistory.vue'
 import ActionButton from './ActionButton.vue'
 
 const props = defineProps<{
-  locationsSearchHistory: Array<[string, CacheEntry]>
   searchInput: string
   suggestedLocations: LocationList
   isLocationSelected: boolean
@@ -56,6 +55,7 @@ const selectSuggestion = (suggestion: Location) => {
         <button
           v-for="(suggestion, index) in suggestedLocations"
           :key="index"
+          :data-testId="`btn-${suggestion.name}-${index}`"
           @click="selectSuggestion(suggestion)"
           class="w-full text-left px-4 py-3 border-b border-gray-200 flex items-center space-x-2 hover:bg-gray-100 transition last:border-b-0 cursor-pointer"
         >
@@ -74,10 +74,6 @@ const selectSuggestion = (suggestion: Location) => {
     </div>
 
     <!-- Search History -->
-    <LocationSearchHistory
-      :locationsSearchHistory="props.locationsSearchHistory"
-      @updateSearchInput="updateSearchInput"
-      class="w-full max-w-lg mx-auto"
-    />
+    <LocationSearchHistory @updateSearchInput="updateSearchInput" class="w-full max-w-lg mx-auto" />
   </div>
 </template>

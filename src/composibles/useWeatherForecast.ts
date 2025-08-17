@@ -4,7 +4,7 @@ import { computed, reactive, ref, toRefs } from 'vue'
 import geocodingApi from '@/api/geo-coding-api'
 import weatherForecastApi from '@/api/weather-forecast-api'
 import type { AlertType } from '@/types/ui'
-import { defaultWeatherForecast, defaultLocation, defaultSearchHistory } from '@/utils/constants'
+import { defaultWeatherForecast, defaultLocation } from '@/utils/constants'
 
 export const useWeatherForecast = () => {
   const searchInput = ref('')
@@ -17,7 +17,6 @@ export const useWeatherForecast = () => {
   const suggestedLocations = reactive<LocationList>([])
   const selectedLocation = reactive<Location>(defaultLocation)
 
-  const locationsSearchHistory = reactive(Object.entries(defaultSearchHistory).slice(0, 5))
   const isLocationSelected = computed(() => Boolean(selectedLocation.name))
 
   const showAlert = (msg: string, type: AlertType = 'info') => {
@@ -82,7 +81,6 @@ export const useWeatherForecast = () => {
     hasForecast,
     isLoading,
     alertMessage,
-    locationsSearchHistory,
     suggestedLocations,
     currentWeatherForecast,
     dailyWeatherForecast,

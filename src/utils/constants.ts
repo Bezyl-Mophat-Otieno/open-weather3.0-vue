@@ -1,24 +1,4 @@
-const defaultSearchHistory = {
-  London: {
-    data: [
-      {
-        name: 'Gaast',
-        country: 'NL',
-        state: 'Frisia',
-        lat: 53.0159495,
-        lon: 5.409187,
-      },
-      {
-        name: 'Gast',
-        country: 'DE',
-        state: 'Schleswig-Holstein',
-        lat: 54.5056305,
-        lon: 9.914506,
-      },
-    ],
-    expiresAt: 1755486516029,
-  },
-}
+
 
 const defaultLocation = {
   name: '',
@@ -38,4 +18,4 @@ const defaultWeatherForecast = {
   daily: [],
 }
 
-export { defaultLocation, defaultSearchHistory, defaultWeatherForecast }
+export { defaultLocation, defaultWeatherForecast }

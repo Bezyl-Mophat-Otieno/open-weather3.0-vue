@@ -17,7 +17,6 @@ const {
   hasForecast,
   dailyWeatherForecast,
   currentWeatherForecast,
-  locationsSearchHistory,
   isLocationSelected,
   alertType,
   selectedLocation,
@@ -55,7 +54,6 @@ watchDebounced(
             <!-- WeatherSearch -->
             <WeatherSearch
               :suggestedLocations="suggestedLocations"
-              :locationsSearchHistory="locationsSearchHistory"
               v-model:searchInput="searchInput"
               @setSelectedSuggestion="setSelectedLocation"
               @getWeatherInformation="getWeatherInformation"
