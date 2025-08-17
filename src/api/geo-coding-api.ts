@@ -1,11 +1,23 @@
+import { geoCodeCache } from '@/sevices/caching'
 import { GeocodeListSchema, type LocationList } from '@/types/geo-coding'
 import { normalizeInput } from '@/utils/normalizeInput'
 import axios from 'axios'
 
 class GeocodingApi {
-  async geoCode(searchParam: string): Promise<{ message: string; data: LocationList } | undefined> {
+  async geoCode(
+    searchParam: string,
+  ): Promise<{ success: boolean; message: string; data: LocationList }> {
     try {
       const normalizedInput = normalizeInput(searchParam)
+
+      const cached = geoCodeCache.getCachedData(normalizedInput)
+      if (cached) {
+        return {
+          success: true,
+          message: `Showing recently searched locations for "${searchParam}".`,
+          data: cached,
+        }
+      }
 
       const { data: response } = await axios.get<LocationList>(
         `${import.meta.env.VITE_OPEN_WEATHER_API_GEOCODE_URL}?q=${normalizedInput}&limit=5&appid=${import.meta.env.VITE_OPEN_WEATHER_API_KEY}`,
@@ -21,13 +33,27 @@ class GeocodingApi {
 
       const parsed = GeocodeListSchema.parse(subset)
 
+      geoCodeCache.cacheData(normalizedInput, parsed)
+
       return {
-        message: `We have successfully geocoded information for ${searchParam}.`,
+        success: true,
+        message: `We successfully found locations matching "${searchParam}".`,
         data: parsed,
       }
-    } catch (e) {
-      console.error(e)
-      return undefined
+    } catch (error) {
+      let userMessage =
+        'An unexpected error occurred while searching for locations. Please try again later.'
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          userMessage = `No locations found for "${searchParam}".`
+        } else if (error.response?.status === 401) {
+          userMessage = 'Invalid API key. Please check your configuration.'
+        } else {
+          userMessage = `Unable to fetch location information for "${searchParam}" at this time.`
+        }
+      }
+      return { success: false, message: userMessage, data: [] }
     }
   }
 }

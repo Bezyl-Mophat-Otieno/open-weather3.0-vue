@@ -4,46 +4,7 @@ import { computed, reactive, ref, toRefs } from 'vue'
 import geocodingApi from '@/api/geo-coding-api'
 import weatherForecastApi from '@/api/weather-forecast-api'
 import type { AlertType } from '@/types/ui'
-
-const defaultSearchHistory = {
-  London: {
-    data: [
-      {
-        name: 'Gaast',
-        country: 'NL',
-        state: 'Frisia',
-        lat: 53.0159495,
-        lon: 5.409187,
-      },
-      {
-        name: 'Gast',
-        country: 'DE',
-        state: 'Schleswig-Holstein',
-        lat: 54.5056305,
-        lon: 9.914506,
-      },
-    ],
-    expiresAt: 1755486516029,
-  },
-}
-
-const defaultLocation = {
-  name: '',
-  country: '',
-  state: '',
-  lat: 0,
-  lon: 0,
-}
-
-const defaultWeatherFocust = {
-  timezone: '',
-  current: {
-    temp: 0,
-    feels_like: 0,
-    weather: [],
-  },
-  daily: [],
-}
+import { defaultWeatherForecast, defaultLocation, defaultSearchHistory } from '@/utils/constants'
 
 export const useWeatherForecast = () => {
   const searchInput = ref('')
@@ -51,7 +12,7 @@ export const useWeatherForecast = () => {
   const isLoading = ref(false)
   const alertMessage = ref('')
   const alertType = ref<AlertType>()
-  const weatherForecast = reactive<WeatherForecast>(defaultWeatherFocust)
+  const weatherForecast = reactive<WeatherForecast>(defaultWeatherForecast)
   const { current: currentWeatherForecast, daily: dailyWeatherForecast } = toRefs(weatherForecast)
   const suggestedLocations = reactive<LocationList>([])
   const selectedLocation = reactive<Location>(defaultLocation)
@@ -77,35 +38,41 @@ export const useWeatherForecast = () => {
   }
 
   const getLocationInformation = async () => {
-    const response = await geocodingApi.geoCode(searchInput.value)
-    if (!response || response.data.length === 0) {
+    if (!searchInput.value.trim()) {
+      showAlert('Please enter a city or location name to search.', 'info')
       return
     }
-    const { data: newSuggestedLocations } = response
+    const { success, data: newSuggestedLocations } = await geocodingApi.geoCode(searchInput.value)
+    if (!success || newSuggestedLocations.length === 0) {
+      return
+    }
     suggestedLocations.length = 0
     suggestedLocations.push(...newSuggestedLocations)
   }
   const getWeatherInformation = async () => {
     suggestedLocations.length = 0
     isLoading.value = true
-    if (!selectedLocation.name || !selectedLocation.country || !selectedLocation.state) {
+    if (!selectedLocation.lat || !selectedLocation.lon || !selectedLocation.name) {
       showAlert(
-        'Kindly make sure you have  searched for a location  and selected from the suggestions before searching for the weather information',
+        'Please select a location from the suggestions before fetching the weather.',
         'error',
       )
       return
     }
-    const weatherForecastInfo = await weatherForecastApi.getWeatherFocust({
+    const { success, message, data } = await weatherForecastApi.getWeatherFocust({
       lat: selectedLocation.lat,
       lon: selectedLocation.lon,
     })
 
-    if (!weatherForecastInfo) {
-      showAlert(`Error fetching weather information.  Kindly try again later`, 'error')
+    if (!success) {
+      showAlert(
+        'Unable to retrieve weather information at this time. Please try again later.',
+        'error',
+      )
       return
     }
-    showAlert(weatherForecastInfo.message, 'success')
-    Object.assign(weatherForecast, weatherForecastInfo.data)
+    showAlert(message, 'success')
+    Object.assign(weatherForecast, data)
     hasForecast.value = true
     isLoading.value = false
   }

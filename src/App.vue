@@ -6,8 +6,8 @@ import AlertMessage from './components/AlertMessage.vue'
 import { useWeatherForecast } from './composibles/useWeatherForecast'
 import { watchDebounced } from '@vueuse/core'
 import { getLocationName } from '@/utils/getLocationName'
-import { Cloud } from 'lucide-vue-next'
 import LoadingSpinner from './components/LoadingSpinner.vue'
+import { Cloud } from 'lucide-vue-next'
 
 const {
   searchInput,
@@ -29,8 +29,7 @@ const {
 
 watchDebounced(
   searchInput,
-  async (newValue) => {
-    if (!newValue) return
+  async () => {
     await getLocationInformation()
   },
   { debounce: 800 },
@@ -77,14 +76,14 @@ watchDebounced(
           <LoadingSpinner v-if="isLoading" />
           <div
             className="flex flex-col items-center justify-center py-16 text-center"
-            v-if="!isLoading"
+            v-if="!isLoading && !Object.values(currentWeatherForecast).every(Boolean)"
           >
             <div class="p-4 bg-gray-100 rounded-full mb-4">
               <Cloud class="h-12 w-12 text-gray-400" />
             </div>
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Search for Weather</h2>
             <p class="text-gray-500 max-w-md">
-              Enter a city name to get current weather conditions and a 7-day forecast.
+              Enter a city name to get current weather conditions and a 5-day forecast.
             </p>
           </div>
 
@@ -97,7 +96,7 @@ watchDebounced(
             />
 
             <div v-if="hasForecast" bg-white border border-gray-200 rounded-lg p-6 shadow-sm>
-              <ForecastCard :dailyWeather="dailyWeatherForecast" />
+              <ForecastCard :dailyWeather="dailyWeatherForecast.slice(0, 5)" />
             </div>
           </div>
         </div>
