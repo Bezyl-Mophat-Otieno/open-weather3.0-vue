@@ -9,6 +9,7 @@ import { Cloud } from 'lucide-vue-next'
 import DailyForecast from '@/components/DailyForecast.vue'
 import CurrentForecast from '@/components/CurrentForecast.vue'
 import { formatDate } from './utils/formatDate'
+import { useCurrentTime } from './composibles/useCurrentTimer'
 
 const {
   searchInput,
@@ -26,6 +27,8 @@ const {
   clearAlert,
   getLocationInformation,
 } = useWeatherForecast()
+
+const { now } = useCurrentTime()
 
 watchDebounced(
   searchInput,
@@ -47,7 +50,7 @@ watchDebounced(
           <div class="flex flex-col">
             <p class="text-lg font-medium text-gray-900">Welcome back!</p>
             <span class="text-sm text-gray-500">
-              {{ formatDate(Math.floor(Date.now() / 1000)) }}
+              {{ formatDate(now) }}
             </span>
           </div>
         </div>
