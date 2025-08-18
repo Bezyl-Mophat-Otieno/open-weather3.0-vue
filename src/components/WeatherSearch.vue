@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineEmits, defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import { getLocationName } from '@/utils/getLocationName'
 import type { Location, LocationList } from '@/types/geo-coding'
 import { MapPin } from 'lucide-vue-next'

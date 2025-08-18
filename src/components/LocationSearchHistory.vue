@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { defineEmits } from 'vue'
 import { Clock, X } from 'lucide-vue-next'
 import { useGeocodeStore } from '@/stores/geocode-store'
 

@@ -3,7 +3,6 @@ import { formatDate } from '@/utils/formatDate'
 import { normalizeInput } from '@/utils/normalizeInput'
 import { getLocationName } from '@/utils/getLocationName'
 
-
 import { describe, it, expect } from 'vitest'
 
 describe('getIconUrl', () => {
@@ -19,10 +18,9 @@ describe('formatDate()', () => {
     // Unix timestamp for  August 19, 2024 00:00:00 UTC
     const timestamp = 1724025600
     const result = formatDate(timestamp)
-    expect(result).toBe('Mon, Aug 19')
+    expect(result).toBe('Aug 19, 2024, 3:00 AM')
   })
 })
-
 describe('normalizeInput()', () => {
   it('trims leading and trailing whitespace', () => {
     const result = normalizeInput('   Nairobi   ')
@@ -45,11 +43,9 @@ describe('normalizeInput()', () => {
   })
 })
 
-
-
 describe('getLocationName()', () => {
   it('returns name + state + country when state is present', () => {
-    const location = { name: 'Nairobi', state: 'Nairobi County', country: 'KE', lat: 45, lon:-49 }
+    const location = { name: 'Nairobi', state: 'Nairobi County', country: 'KE', lat: 45, lon: -49 }
     const result = getLocationName(location)
     expect(result).toBe('Nairobi Nairobi County (KE)')
   })

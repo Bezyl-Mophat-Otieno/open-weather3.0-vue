@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AlertType } from '@/types/ui'
-import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps<{
   message: string

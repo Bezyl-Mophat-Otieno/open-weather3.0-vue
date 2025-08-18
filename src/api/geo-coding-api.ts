@@ -1,12 +1,11 @@
 import { useGeocodeStore } from '@/stores/geocode-store'
+import type { JsonResponse } from '@/types/api'
 import { GeocodeListSchema, type LocationList } from '@/types/geo-coding'
 import { normalizeInput } from '@/utils/normalizeInput'
 import axios from 'axios'
 
 class GeocodingApi {
-  async geoCode(
-    searchParam: string,
-  ): Promise<{ success: boolean; message: string; data: LocationList }> {
+  async geoCode(searchParam: string): Promise<JsonResponse<LocationList>> {
     try {
       const normalizedInput = normalizeInput(searchParam)
 
@@ -37,7 +36,6 @@ class GeocodingApi {
 
       geocodeStore.cacheData(normalizedInput, parsed)
 
-      console.log(geocodeStore.locationSearchHistory, 'Hello')
 
       return {
         success: true,

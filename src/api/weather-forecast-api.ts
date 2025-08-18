@@ -1,4 +1,5 @@
 import { useWeatherForecastStore } from '@/stores/weather-forecast-store'
+import type { JsonResponse } from '@/types/api'
 import { type WeatherForecast, weatherForecastSchema } from '@/types/weather-forecast'
 import { defaultWeatherForecast } from '@/utils/constants'
 import { normalizeInput } from '@/utils/normalizeInput'
@@ -11,7 +12,7 @@ class WeatherForecastApi {
   }: {
     lat: number
     lon: number
-  }): Promise<{ success: boolean; message: string; data: WeatherForecast }> {
+  }): Promise<JsonResponse<WeatherForecast>> {
     const searchParam = `${lat}-${lon}`
     const normalizedInputQuery = normalizeInput(searchParam)
 
