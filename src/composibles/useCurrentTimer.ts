@@ -15,7 +15,7 @@ export function useCurrentTime() {
     if (intervalId) {
       clearInterval(intervalId)
     }
-  })
+  }) 
 
   return { now }
 }

@@ -50,7 +50,7 @@ watchDebounced(
           <div class="flex flex-col">
             <p class="text-lg font-medium text-gray-900">Welcome back!</p>
             <span class="text-sm text-gray-500">
-              {{ formatDate(now) }}
+              {{ formatDate(now)}}
             </span>
           </div>
         </div>
